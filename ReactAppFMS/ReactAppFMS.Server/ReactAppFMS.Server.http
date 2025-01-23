@@ -1,6 +1,0 @@
-@ReactAppFMS.Server_HostAddress = http://localhost:5033
-
-GET {{ReactAppFMS.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
