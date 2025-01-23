@@ -2,10 +2,8 @@ using FMS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Enregistrer HttpClient dans DI
 builder.Services.AddHttpClient();
 
-// Enregistrer GitHubService dans le conteneur DI
 builder.Services.AddScoped<GitHubService>();
 
 builder.Services.AddControllersWithViews();
