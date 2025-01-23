@@ -1,0 +1,25 @@
+﻿@* Vue Razor - Index.cshtml *@
+<h2>Bienvenue dans l'application MVC</h2>
+
+<div id="repositories-list">
+    <p>Nombre de dépôts Python trouvés : @ViewBag.RepositoryCount</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Effectuer un appel AJAX vers l'action 'Repositories' de GitHubController dès que la page est chargée
+        $.ajax({
+            url: '@Url.Action("Repositories", "GitHub")',
+            type: 'GET',
+            success: function (data) {
+                // Mettez à jour le contenu de la div avec le nombre de dépôts
+                $('#repositories-list').html('<p>Nombre de dépôts Python trouvés : ' + data + '</p>');
+            },
+            error: function (xhr, status, error) {
+                console.log("Erreur lors de l'appel API");
+            }
+        });
+    });
+</script>
