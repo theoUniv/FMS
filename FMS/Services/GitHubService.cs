@@ -32,7 +32,10 @@ namespace FMS.Services
                 return totalCount;  // Retourne le nombre total de repositories pour ce langage
             }
 
+            Dispose();
+
             throw new Exception($"Erreur lors de l'appel à l'API GitHub : {response.StatusCode}");
+
         }
 
         // Implémentation de IDisposable pour libérer les ressources HttpClient
