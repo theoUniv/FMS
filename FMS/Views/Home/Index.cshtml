@@ -1,25 +1,55 @@
 ﻿@* Vue Razor - Index.cshtml *@
 <h2>Bienvenue dans l'application MVC</h2>
 
-<div id="repositories-list">
-    <p>Nombre de dépôts Python trouvés : @ViewBag.RepositoryCount</p>
+<!-- Formulaire pour ajouter un utilisateur -->
+<div>
+    <h3>Ajouter un utilisateur</h3>
+    <form id="addUserForm">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required />
+        <br />
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required />
+        <br />
+        <button type="submit">Ajouter l'utilisateur</button>
+    </form>
 </div>
+
+<div id="responseMessage"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function () {
-        // Effectuer un appel AJAX vers l'action 'Repositories' de GitHubController dès que la page est chargée
-        $.ajax({
-            url: '@Url.Action("Repositories", "GitHub")',
-            type: 'GET',
-            success: function (data) {
-                // Mettez à jour le contenu de la div avec le nombre de dépôts
-                $('#repositories-list').html('<p>Nombre de dépôts Python trouvés : ' + data + '</p>');
-            },
-            error: function (xhr, status, error) {
-                console.log("Erreur lors de l'appel API");
-            }
+        // Lors de la soumission du formulaire
+        $('#addUserForm').on('submit', function (e) {
+            e.preventDefault(); // Empêcher la soumission classique du formulaire
+
+            // Récupérer les données du formulaire
+            var userData = {
+                username: $('#username').val(),
+                password: $('#password').val()
+            };
+
+            console.log(userData);
+
+            // Effectuer un appel AJAX pour ajouter l'utilisateur
+            $.ajax({
+                url: '@Url.Action("AddUser", "SQL")', // URL vers l'action AddUser du contrôleur SQL
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(userData), // Convertir les données en JSON
+                success: function (response) {
+                    // Afficher un message de succès
+                    $('#responseMessage').html('<p>' + response.Message + '</p>');
+                    // Réinitialiser le formulaire
+                    $('#addUserForm')[0].reset();
+                },
+                error: function (xhr, status, error) {
+                    // Gérer l'erreur
+                    $('#responseMessage').html('<p>Erreur lors de l\'ajout de l\'utilisateur.</p>');
+                }
+            });
         });
     });
 </script>
