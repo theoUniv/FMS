@@ -1,82 +1,77 @@
-﻿using FMS.Models;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using FMS.Services;
+using FMS.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-public class AuthController : ControllerBase
+namespace FMS.Controllers
 {
-    private readonly AppDbContext _context;
-    private readonly AesCipherService _aesCipherService;
-    private readonly JwtService _jwtService;
-
-    public AuthController(AppDbContext context, AesCipherService aesCipherService, JwtService jwtService)
+    [Route("api/auth")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
-        _context = context;
-        _aesCipherService = aesCipherService;
-        _jwtService = jwtService;
-    }
+        private readonly AppDbContext _context;
+        private readonly AesCipherService _aesCipherService;
+        private readonly JwtService _jwtService;
 
-    // Action pour enregistrer un nouvel utilisateur
-    [HttpPost("register")]
-    public IActionResult Register([FromBody] RegisterRequest request)
-    {
-        if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
+        public AuthController(AppDbContext context, AesCipherService aesCipherService, JwtService jwtService)
         {
-            return BadRequest(new { Message = "Nom d'utilisateur ou mot de passe manquant." });
+            _context = context;
+            _aesCipherService = aesCipherService;
+            _jwtService = jwtService;
         }
 
-        // Vérifiez si le nom d'utilisateur existe déjà
-        if (_context.Users.Any(u => u.username == request.Username))
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] UserModel user)
         {
-            return Conflict(new { Message = "Le nom d'utilisateur existe déjà." });
+            if (user == null || string.IsNullOrEmpty(user.username) || string.IsNullOrEmpty(user.password))
+            {
+                return BadRequest(new { message = "Nom d'utilisateur ou mot de passe manquant" });
+            }
+
+            var existingUser = _context.Users.FirstOrDefault(u => u.username == user.username);
+            if (existingUser != null)
+            {
+                return Conflict(new { message = "Nom d'utilisateur déjà pris" });
+            }
+
+            var encryptedPassword = _aesCipherService.EncryptPassword(user.password);
+
+            var newUser = new UserModel
+            {
+                username = user.username,
+                password = encryptedPassword
+            };
+
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            return Ok(new { success = true, message = "Utilisateur créé avec succès" });
         }
 
-        // Chiffrement du mot de passe
-        var encryptedPassword = _aesCipherService.EncryptPassword(request.Password);  // Chiffrement du mot de passe
-
-        // Créer un nouvel utilisateur
-        var newUser = new UserModel
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] UserModel user)
         {
-            username = request.Username,
-            password = encryptedPassword  // Stocker le mot de passe chiffré
-        };
+            if (user == null || string.IsNullOrEmpty(user.username) || string.IsNullOrEmpty(user.password))
+            {
+                return BadRequest(new { message = "Nom d'utilisateur ou mot de passe manquant" });
+            }
 
-        // Sauvegarder l'utilisateur dans la base de données
-        _context.Users.Add(newUser);
-        _context.SaveChanges();
+            var storedUser = _context.Users.FirstOrDefault(u => u.username == user.username);
+            if (storedUser == null)
+            {
+                return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
+            }
 
-        return Ok(new { Message = "Utilisateur enregistré avec succès." });
-    }
+            var isPasswordValid = _aesCipherService.VerifyPassword(storedUser.password, user.password);
+            if (!isPasswordValid)
+            {
+                return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
+            }
 
-    // Action pour la connexion de l'utilisateur
-    [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
-    {
-        if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
-        {
-            return BadRequest(new { Message = "Nom d'utilisateur ou mot de passe manquant." });
+            var token = _jwtService.GenerateToken(user.username);
+            return Ok(new { token });
         }
 
-        // Trouver l'utilisateur dans la base de données
-        var user = _context.Users.SingleOrDefault(u => u.username == request.Username);
-
-        if (user == null)
-        {
-            return Unauthorized(new { Message = "Nom d'utilisateur ou mot de passe incorrect." });
-        }
-
-        // Vérifier le mot de passe
-        bool isPasswordValid = _aesCipherService.VerifyPassword(user.password, request.Password);  // Vérification du mot de passe
-
-        if (!isPasswordValid)
-        {
-            return Unauthorized(new { Message = "Nom d'utilisateur ou mot de passe incorrect." });
-        }
-
-        // Si l'utilisateur est authentifié, générer un jeton JWT
-        var token = _jwtService.GenerateToken(user.username);
-
-        return Ok(new { Token = token });
     }
 }

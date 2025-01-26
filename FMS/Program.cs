@@ -1,5 +1,9 @@
 using FMS.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +16,29 @@ builder.Services.AddHttpClient();
 
 // Ajouter le service GitHubService
 builder.Services.AddScoped<GitHubService>();
+builder.Services.AddSingleton<AesCipherService>();
+builder.Services.AddSingleton<JwtService>();
 
-// Ajouter les contrôleurs avec vues
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "FMS",
+        ValidAudience = "FMS",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UneCléSecrètePourLeJWT"))
+    };
+});
+
 builder.Services.AddControllersWithViews();
-
 var app = builder.Build();
 
 // Configuration des middlewares
@@ -32,6 +55,8 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();  // Ajout du middleware d'authentification
+app.UseAuthorization();
 
 // Définir les routes pour les contrôleurs
 app.MapControllerRoute(

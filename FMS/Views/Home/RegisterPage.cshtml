@@ -1,0 +1,47 @@
+﻿<h2>Register</h2>
+
+<form id="registerForm">
+    <div class="form-group">
+        <label for="newUsername">Username</label>
+        <input type="text" class="form-control" id="newUsername" placeholder="Enter username" required>
+    </div>
+    <div class="form-group">
+        <label for="newPassword">Password</label>
+        <input type="password" class="form-control" id="newPassword" placeholder="Enter password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+<p id="registerError" style="color:red; display:none;"></p>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById("newUsername").value;
+        const password = document.getElementById("newPassword").value;
+
+        const registerData = { username, password };
+
+        fetch("/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(registerData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/Home/LoginPage";  // Rediriger vers la page de connexion après l'inscription
+            } else {
+                document.getElementById("registerError").style.display = "block";
+                document.getElementById("registerError").textContent = "Erreur lors de l'inscription.";
+            }
+        })
+        .catch(error => {
+            document.getElementById("registerError").style.display = "block";
+            document.getElementById("registerError").textContent = "Erreur lors de l'inscription.";
+        });
+    });
+</script>

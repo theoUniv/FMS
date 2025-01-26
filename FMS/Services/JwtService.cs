@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 public class JwtService
 {
-    private readonly string _secretKey = "UneCléSecrètePourLeJWT"; // Clé secrète pour signer le JWT
+    private readonly string _secretKey = "UneCléSecrètePourLeJWTQuiEstLongueAssezPourHS256"; // Utilisez une clé plus longue (min 32 octets)
     private readonly int _expiryDurationInMinutes = 30;
 
     // Générer le token JWT
@@ -18,8 +18,10 @@ public class JwtService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+        // Assurez-vous que la clé a une longueur de 32 octets (256 bits)
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.PadRight(32, ' '))); // Compléter à 32 octets si nécessaire
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
         var token = new JwtSecurityToken(
             issuer: "FMS",
             audience: "FMS",
