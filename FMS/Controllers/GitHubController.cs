@@ -12,12 +12,17 @@ namespace FMS.Controllers
             _gitHubService = gitHubService;
         }
 
-        public async Task<IActionResult> Repositories()
+        public async Task<IActionResult> GetLanguageStats()
         {
-            var language = "python";
-            var apiResponse = await _gitHubService.GetPopularRepositoriesCount(language);
-
-            return Json(apiResponse);
+            try
+            {
+                var languageStats = await _gitHubService.GetLanguageStatistics();
+                return Json(languageStats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = ex.Message });
+            }
         }
     }
 }
