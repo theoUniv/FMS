@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Net.Http;
 
 namespace FMS.Services
 {
@@ -13,32 +12,37 @@ namespace FMS.Services
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "ASP.NET MVC App");
         }
 
-        public async Task<int> GetPopularRepositoriesCount(string language)
+        public async Task<Dictionary<string, int>> GetLanguageStatistics()
         {
             string token = "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";
-            string apiUrl = $"https://api.github.com/search/repositories?q=language:{language}&sort=stars&order=desc";
+            string[] languages = { "Python", "JavaScript", "Java", "C#", "Go", "Ruby", "PHP", "TypeScript", "C++", "Swift" };
 
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);
 
-            var response = await _httpClient.GetAsync(apiUrl);
-            if (response.IsSuccessStatusCode)
+            var languageStats = new Dictionary<string, int>();
+
+            foreach (var language in languages)
             {
+                string apiUrl = $"https://api.github.com/search/repositories?q=language:{language}&stars:>1";
+                var response = await _httpClient.GetAsync(apiUrl);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Erreur lors de l'appel à l'API GitHub pour {language}: {response.StatusCode}");
+                }
+
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 JObject json = JObject.Parse(jsonResponse);
 
-                // Le nombre total de repositories est dans le champ "total_count"
-                int totalCount = json["total_count"].Value<int>();
-
-                return totalCount;  // Retourne le nombre total de repositories pour ce langage
+                // Extraire le total des dépôts pour le langage
+                int totalCount = json["total_count"]?.Value<int>() ?? 0;
+                languageStats[language] = totalCount;
             }
 
-            Dispose();
-
-            throw new Exception($"Erreur lors de l'appel à l'API GitHub : {response.StatusCode}");
-
+            return languageStats;
         }
 
-        // Implémentation de IDisposable pour libérer les ressources HttpClient
+
         public void Dispose()
         {
             _httpClient.Dispose();
