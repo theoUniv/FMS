@@ -16,33 +16,4 @@
 
 <!-- Bouton pour rediriger vers la page d'inscription -->
 <button class="btn btn-secondary mt-2" onclick="window.location.href='/Home/RegisterPage'">S'inscrire</button>
-
-<script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-
-        const loginData = { username, password };
-
-        fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(loginData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.token) {
-                localStorage.setItem("token", data.token);  // Stocker le jeton JWT
-                window.location.href = "/GitHub/Index";  // Rediriger vers la page protégée
-            }
-        })
-        .catch(error => {
-            document.getElementById("error").style.display = "block";
-            document.getElementById("error").textContent = "Nom d'utilisateur ou mot de passe incorrect";
-        });
-    });
-</script>
+<script src="~/js/home/LoginPage.js"></script>

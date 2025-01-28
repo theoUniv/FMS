@@ -1,10 +1,11 @@
 ﻿using FMS.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FMS.Controllers
 {
-    [Authorize]  // Cette ligne assure que l'utilisateur doit être authentifié
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GitHubController : Controller
     {
         private readonly GitHubService _gitHubService;

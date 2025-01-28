@@ -34,7 +34,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = "FMS",
         ValidAudience = "FMS",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UneCléSecrètePourLeJWT"))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UneCléSecrètePourLeJWTQuiEstLongueAssezPourHS256".PadRight(32, ' ')))
     };
 });
 
