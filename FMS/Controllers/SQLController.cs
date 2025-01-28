@@ -5,15 +5,26 @@ namespace FMS.Controllers
 {
     public class SQLController : Controller
     {
+
+        /// <summary>
+        /// Contexte de la base de données pour interagir avec les entités.
+        /// </summary>
         private readonly AppDbContext _context;
 
-        // Injection de DbContext
+        /// <summary>
+        /// Constructeur qui initialise le contrôleur avec le contexte de base de données.
+        /// </summary>
+        /// <param name="context">Contexte de la base de données.</param>
         public SQLController(AppDbContext context)
         {
             _context = context;
         }
 
-        // Action pour ajouter un utilisateur via POST
+        /// <summary>
+        /// Action permettant d'ajouter un utilisateur à la base de données via une requête POST.
+        /// </summary>
+        /// <param name="newUser">Les données de l'utilisateur à ajouter.</param>
+        /// <returns>Une réponse HTTP indiquant le succès ou l'échec de l'opération.</returns>
         [HttpPost]
         public IActionResult AddUser([FromBody] UserModel newUser)
         {
@@ -22,11 +33,9 @@ namespace FMS.Controllers
                 return BadRequest(new { Message = "Données utilisateur manquantes." });
             }
 
-            // Ajouter l'utilisateur à la base de données
-            _context.Users.Add(newUser);  // Utilisation de _context.Users au lieu de _context.Products
+            _context.Users.Add(newUser);
             _context.SaveChanges();
 
-            // Retourner une réponse de succès
             return Ok(new { Message = "Utilisateur ajouté avec succès !" });
         }
     }

@@ -20,7 +20,11 @@ namespace FMS.Controllers
             _jwtService = jwtService;
         }
 
-
+        /// <summary>
+        /// Inscrit un nouvel utilisateur. Le mot de passe est chiffré avant d'être stocké.
+        /// </summary>
+        /// <param name="user">Modèle utilisateur contenant le nom d'utilisateur et le mot de passe</param>
+        /// <returns>Retourne une réponse indiquant si l'inscription a réussi ou échoué</returns>
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserModel user)
         {
@@ -49,6 +53,11 @@ namespace FMS.Controllers
             return Ok(new { success = true, message = "Utilisateur créé avec succès" });
         }
 
+        /// <summary>
+        /// Authentifie un utilisateur. Si le nom d'utilisateur et le mot de passe sont valides, génère un token JWT.
+        /// </summary>
+        /// <param name="user">Modèle utilisateur contenant le nom d'utilisateur et le mot de passe</param>
+        /// <returns>Retourne un token JWT si l'utilisateur est authentifié avec succès, sinon une erreur</returns>
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserModel user)
         {

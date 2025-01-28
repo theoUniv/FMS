@@ -15,7 +15,10 @@ namespace FMS.Controllers
             _gitHubService = gitHubService;
         }
 
-        // Action pour récupérer les statistiques des langages
+        /// <summary>
+        /// Action pour récupérer les statistiques des langages de programmation sur GitHub.
+        /// </summary>
+        /// <returns>Retourne les statistiques des langages sous forme de JSON</returns>
         public async Task<IActionResult> GetLanguageStats()
         {
             try
@@ -29,10 +32,13 @@ namespace FMS.Controllers
             }
         }
 
-        // Vous pouvez également avoir une action pour retourner la page
+        /// <summary>
+        /// Action pour afficher la page contenant le graphique.
+        /// </summary>
+        /// <returns>Retourne la vue pour afficher le graphique des langages.</returns>
         public IActionResult Index()
         {
-            return View();  // Rendre la vue qui contient votre graphique
+            return View();
         }
     }
 }

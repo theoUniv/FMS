@@ -7,7 +7,11 @@ public class AesCipherService
 {
     private readonly string _encryptionKey = "4f5d7e8b9c1a2b4f7d6a3b6c7e9f0d0a1e4c8d7b9c3f2b6c5a4d3b6e7f1a0d1"; // Clé de 32 octets pour AES-256
 
-    // Méthode pour convertir une chaîne hexadécimale en tableau d'octets
+    /// <summary>
+    /// Convertit une chaîne hexadécimale en tableau d'octets.
+    /// </summary>
+    /// <param name="hex">La chaîne hexadécimale à convertir.</param>
+    /// <returns>Le tableau d'octets correspondant à la chaîne hexadécimale.</returns>
     private byte[] ConvertHexToBytes(string hex)
     {
         int length = hex.Length / 2;
@@ -19,7 +23,11 @@ public class AesCipherService
         return bytes;
     }
 
-    // Méthode pour s'assurer que la clé est de 32 octets
+    /// <summary>
+    /// Vérifie que la clé est valide (32 octets).
+    /// Si la clé est trop longue ou trop courte, elle est ajustée à 32 octets.
+    /// </summary>
+    /// <returns>La clé valide de 32 octets.</returns>
     private byte[] GetValidKey()
     {
         byte[] keyBytes = ConvertHexToBytes(_encryptionKey);
@@ -37,7 +45,11 @@ public class AesCipherService
         return keyBytes;
     }
 
-    // Méthode pour chiffrer le mot de passe
+    /// <summary>
+    /// Chiffre un mot de passe en utilisant AES avec une clé de 32 octets et un vecteur d'initialisation aléatoire.
+    /// </summary>
+    /// <param name="plainTextPassword">Le mot de passe en texte clair à chiffrer.</param>
+    /// <returns>Le mot de passe chiffré sous forme de chaîne encodée en Base64.</returns>
     public string EncryptPassword(string plainTextPassword)
     {
         using (Aes aesAlg = Aes.Create())
@@ -61,7 +73,12 @@ public class AesCipherService
         }
     }
 
-    // Méthode pour déchiffrer un mot de passe
+    /// <summary>
+    /// Vérifie si un mot de passe en texte clair correspond à un mot de passe chiffré.
+    /// </summary>
+    /// <param name="encryptedPassword">Le mot de passe chiffré à vérifier.</param>
+    /// <param name="plainTextPassword">Le mot de passe en texte clair à comparer.</param>
+    /// <returns>Retourne vrai si les mots de passe correspondent, sinon faux.</returns>
     public bool VerifyPassword(string encryptedPassword, string plainTextPassword)
     {
         byte[] cipherBytes = Convert.FromBase64String(encryptedPassword); // Convertir le mot de passe chiffré en tableau d'octets
