@@ -35,8 +35,8 @@ namespace FMS.Tests
 
             // Assert
             result.Should().NotBeNull();
-            //result.Should().ContainKey("C#"); // Vérifie si le langage C# est présent
-            //result.Should().ContainKey("Python"); // Vérifie si le langage Python est présent
+            result.Should().ContainKey("C#"); // Vérifie si le langage C# est présent
+            result.Should().ContainKey("Python"); // Vérifie si le langage Python est présent
         }
     }
 }
