@@ -14,7 +14,7 @@ namespace FMS.Services
 
         public async Task<Dictionary<string, int>> GetLanguageStatistics()
         {
-            string token = "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";
+            string token = "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";
             string[] languages = { "Python", "JavaScript", "Java", "C#", "Go", "Ruby", "PHP", "TypeScript", "C++", "Swift" };
 
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);

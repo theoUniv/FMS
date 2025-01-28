@@ -8,5 +8,17 @@ namespace FMS.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult LoginPage()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult RegisterPage()
+        {
+            return View();
+        }
     }
 }
