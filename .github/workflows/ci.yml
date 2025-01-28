@@ -1,0 +1,33 @@
+name: CI Pipeline
+
+# Déclencheurs : Quand il y a un push sur la branche 'main' ou une pull request vers 'main'
+on:
+  push:
+    branches:
+      - main  # Vous pouvez ajouter d'autres branches si vous le souhaitez
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Job de build et tests
+  build:
+    runs-on: ubuntu-latest  # Cela spécifie l'environnement d'exécution (ici, Ubuntu)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Étape pour récupérer le code source du dépôt
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1  # Installe le SDK .NET
+        with:
+          dotnet-version: '6.x'  # Spécifiez la version de .NET que vous utilisez, ici .NET 6
+
+      - name: Restore dependencies
+        run: dotnet restore  # Restaure les dépendances de votre projet
+
+      - name: Build project
+        run: dotnet build --configuration Release  # Compile le projet en mode Release
+
+      - name: Run tests
+        run: dotnet test --configuration Release  # Exécute les tests unitaires

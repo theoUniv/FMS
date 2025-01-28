@@ -4,17 +4,28 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
+/// <summary>
+/// Service responsable de la génération de tokens JWT.
+/// </summary>
 public class JwtService
 {
     private readonly string _secretKey;
     private readonly int _expiryDurationInMinutes;
 
+    /// <summary>
+    /// Constructeur par défaut du service JWT. Initialise la clé secrète et la durée d'expiration du token.
+    /// </summary>
     public JwtService()
     {
         _secretKey = "UneCléSecrètePourLeJWTQuiEstLongueAssezPourHS256".PadRight(32, ' ');
         _expiryDurationInMinutes = 30;
     }
 
+    /// <summary>
+    /// Génère un token JWT pour un utilisateur donné.
+    /// </summary>
+    /// <param name="username">Nom d'utilisateur pour lequel le token sera généré.</param>
+    /// <returns>Token JWT sous forme de chaîne de caractères.</returns>
     public string GenerateToken(string username)
     {
         var claims = new[]
