@@ -1,19 +1,32 @@
-﻿<h2>Login</h2>
+﻿<div class="container d-flex justify-content-center align-items-center">
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4 text-primary fw-bold">Connexion</h2>
 
-<form id="loginForm">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+                    <!-- Message d'erreur -->
+                    <div id="error" class="alert alert-danger text-center d-none"></div>
+
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" id="username" placeholder="Entrez votre nom d'utilisateur" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" id="password" placeholder="Entrez votre mot de passe" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="/Home/RegisterPage" class="btn btn-link">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+</div>
 
-<p id="error" style="color:red; display:none;"></p>
-
-<!-- Bouton pour rediriger vers la page d'inscription -->
-<button class="btn btn-secondary mt-2" onclick="window.location.href='/Home/RegisterPage'">S'inscrire</button>
 <script src="~/js/home/LoginPage.js"></script>
