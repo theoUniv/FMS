@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.ComponentModel;
 
 namespace FMS.Services
 {
@@ -25,10 +26,10 @@ namespace FMS.Services
         /// </summary>
         /// <returns>Un dictionnaire contenant les noms des langages comme clés et le nombre de dépôts comme valeurs.</returns>
         /// <exception cref="Exception">Lance une exception en cas d'échec de la requête HTTP.</exception>
-        public async Task<Dictionary<string, int>> GetLanguageStatistics()
+        public async Task<Dictionary<string, int>> GetLanguageStatistics(List<string> languages)
         {
             string token = "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";
-            string[] languages = { "Python", "JavaScript", "Java", "C#", "Go", "Ruby", "PHP", "TypeScript", "C++", "Swift" };
+            //string[] languages = { "Python", "JavaScript", "Java", "C#", "Go", "Ruby", "PHP", "TypeScript", "C++", "Swift" };
 
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);
 
@@ -53,6 +54,32 @@ namespace FMS.Services
             }
 
             return languageStats;
+        }
+
+        public async Task<int> GetLanguageRepoNumber(string langage)
+        {
+            string token = "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";
+
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);
+
+            var languageStats = new Dictionary<string, int>();
+
+            string apiUrl = $"https://api.github.com/search/repositories?q=language:{langage}&stars:>1";
+            var response = await _httpClient.GetAsync(apiUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Erreur lors de l'appel à l'API GitHub pour {langage}: {response.StatusCode}");
+            }
+
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(jsonResponse);
+
+            // Extraire le total des dépôts pour le langage
+            int totalCount = json["total_count"]?.Value<int>() ?? 0;
+            languageStats[langage] = totalCount;
+
+            return totalCount;
         }
 
         /// <summary>

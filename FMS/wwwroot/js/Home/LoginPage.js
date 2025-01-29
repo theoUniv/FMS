@@ -15,6 +15,7 @@
     })
         .then(response => {
             if (!response.ok) {
+                toastr.error("Identifiants incorrects. Veuillez réessayer.", "Erreur de connexion");
                 throw new Error('Login échoué');
             }
             return response.json();
@@ -22,7 +23,9 @@
         .then(data => {
             localStorage.setItem("token", data.token); // Enregistrer le token
             console.log("Connexion réussie, token sauvegardé :", data.token);
+            window.location.href = "/Home/Index"; // Redirection
         })
-        .catch(error => console.error(error));
-
+        .catch(error => {
+            console.error(error);
+        });
 });

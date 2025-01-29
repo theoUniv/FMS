@@ -12,6 +12,8 @@ namespace FMS.Tests
 {
     public class GitHubServiceTests
     {
+
+
         [Fact]
         public async Task GetLanguageStatistics_ShouldReturnValidData_WhenResponseIsSuccessful()
         {
@@ -31,7 +33,7 @@ namespace FMS.Tests
             var gitHubService = new GitHubService(httpClient);
 
             // Act
-            var result = await gitHubService.GetLanguageStatistics();
+            var result = await gitHubService.GetLanguageStatistics(new List<string> { "C#", "Python" });
 
             // Assert
             result.Should().NotBeNull();

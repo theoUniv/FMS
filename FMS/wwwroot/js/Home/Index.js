@@ -43,6 +43,7 @@
         const spinner = document.getElementById('loadingSpinner');
         const chartCanvas = document.getElementById('languageChart');
 
+        // Récupérer les stats des langages GitHub
         fetch('/GitHub/GetLanguageStats', {
             method: 'GET',
             headers: {
@@ -50,7 +51,6 @@
             }
         })
             .then(response => {
-                console.log("Token utilisé :", token);
                 if (!response.ok) {
                     throw new Error(`Erreur ${response.status}: ${response.statusText}`);
                 }
@@ -90,5 +90,40 @@
                 console.error("Erreur lors de la récupération des données :", error);
                 spinner.innerHTML = '<p class="text-danger">Erreur lors du chargement des données.</p>';
             });
+    }
+
+    // Gestion du bouton "Mettre à jour les données des langages"
+    const updateLangagesButton = document.getElementById("updateLangagesButton");
+    if (updateLangagesButton) {
+        updateLangagesButton.addEventListener("click", function () {
+            // Afficher le spinner pendant la mise à jour
+            //spinner.style.display = 'block';
+            //chartCanvas.style.display = 'none';
+
+            // Appeler l'API pour mettre à jour les données des langages
+            fetch('/GitHub/UpdateAllLangageData', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Afficher un message de succès
+                    toastr.success("Les données des langages ont été mises à jour avec succès.", "Succès");
+                    location.reload();
+                    //spinner.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la mise à jour des données :", error);
+                    toastr.error("Erreur lors de la mise à jour des données des langages.", "Erreur");
+                    //spinner.style.display = 'none';
+                });
+        });
     }
 });
