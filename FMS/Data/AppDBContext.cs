@@ -7,7 +7,8 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Représente la collection d'utilisateurs dans la base de données.
     /// </summary>
-    public DbSet<UserModel> Users { get; set; }  // Corrected to match the table name "Users"
+    public DbSet<UserModel> Users { get; set; }
+    public DbSet<GitHubLangageDataModel> GitHubLanguagesData { get; set; }
 
     /// <summary>
     /// Initialise une nouvelle instance de la classe <see cref="AppDbContext"/> avec les options spécifiées.
@@ -37,5 +38,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserModel>()
             .ToTable("Users")  // Map UserModel to the "Users" table in the database
             .HasKey(u => u.user_id);  // Set user_id as the primary key
+
+        modelBuilder.Entity<GitHubLangageDataModel>()
+            .ToTable("GitHubLangagesData")
+            .HasKey(g => g.id_github_langage_data);
     }
 }
