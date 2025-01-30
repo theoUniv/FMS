@@ -40,6 +40,25 @@ namespace FMS.Migrations
                     b.ToTable("GitHubLangagesData", (string)null);
                 });
 
+            modelBuilder.Entity("FMS.Models.GitHubYearlyStatsModel", b =>
+                {
+                    b.Property<int>("id_github_yearly_stats")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_github_yearly_stats"));
+
+                    b.Property<int>("nombre_repertoire")
+                        .HasColumnType("int");
+
+                    b.Property<int>("year")
+                        .HasColumnType("int");
+
+                    b.HasKey("id_github_yearly_stats");
+
+                    b.ToTable("GitHubYearlyStats", (string)null);
+                });
+
             modelBuilder.Entity("FMS.Models.UserModel", b =>
                 {
                     b.Property<int>("user_id")

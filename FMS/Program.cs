@@ -34,7 +34,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = "FMS",
         ValidAudience = "FMS",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UneCléSecrètePourLeJWTQuiEstLongueAssezPourHS256".PadRight(32, ' ')))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UneCleSecretePourLeJWTQuiEstLongueAssezPourHS256"))
     };
 });
 
@@ -55,6 +55,22 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Headers.ContainsKey("Authorization"))
+    {
+        Console.WriteLine($"? Token reçu dans l'Authorization Header : {context.Request.Headers["Authorization"]}");
+    }
+    else
+    {
+        Console.WriteLine("?? Aucun token reçu dans l'Authorization Header !");
+    }
+
+    await next();
+});
+
+
 app.UseAuthentication();  // Ajout du middleware d'authentification
 app.UseAuthorization();
 
@@ -62,5 +78,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

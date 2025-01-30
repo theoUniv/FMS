@@ -17,7 +17,7 @@ public class JwtService
     /// </summary>
     public JwtService()
     {
-        _secretKey = "UneCléSecrètePourLeJWTQuiEstLongueAssezPourHS256".PadRight(32, ' ');
+        _secretKey = "UneCleSecretePourLeJWTQuiEstLongueAssezPourHS256";
         _expiryDurationInMinutes = 30;
     }
 
@@ -33,7 +33,7 @@ public class JwtService
             new Claim(ClaimTypes.Name, username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-
+        
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -44,6 +44,8 @@ public class JwtService
             expires: DateTime.Now.AddMinutes(_expiryDurationInMinutes),
             signingCredentials: creds
         );
+        
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

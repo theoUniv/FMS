@@ -9,6 +9,8 @@ public class AppDbContext : DbContext
     /// </summary>
     public DbSet<UserModel> Users { get; set; }
     public DbSet<GitHubLangageDataModel> GitHubLanguagesData { get; set; }
+    
+    public DbSet<GitHubYearlyStatsModel> GitHubYearlyStatsModel { get; set; }
 
     /// <summary>
     /// Initialise une nouvelle instance de la classe <see cref="AppDbContext"/> avec les options spécifiées.
@@ -25,9 +27,9 @@ public class AppDbContext : DbContext
     /// <param name="optionsBuilder">Le constructeur d'options de base de données.</param>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=DESKTOP-MVTS569;Database=FMS;Trusted_Connection=True;TrustServerCertificate=True;");
-
+        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=master;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;");
     }
+
 
     /// <summary>
     /// Configure le modèle de données en mappant les entités aux tables de la base de données.
@@ -42,5 +44,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<GitHubLangageDataModel>()
             .ToTable("GitHubLangagesData")
             .HasKey(g => g.id_github_langage_data);
+        
+        modelBuilder.Entity<GitHubYearlyStatsModel>()
+            .ToTable("GitHubYearlyStats")
+            .HasKey(g => g.id_github_yearly_stats);
     }
 }

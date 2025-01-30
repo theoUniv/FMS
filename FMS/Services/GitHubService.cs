@@ -10,6 +10,7 @@ namespace FMS.Services
     public class GitHubService : IDisposable
     {
         private readonly HttpClient _httpClient;
+        private readonly string _accessToken = "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";
 
         /// <summary>
         /// Constructeur de service qui initialise un client HTTP avec un en-tête "User-Agent".
@@ -28,10 +29,9 @@ namespace FMS.Services
         /// <exception cref="Exception">Lance une exception en cas d'échec de la requête HTTP.</exception>
         public async Task<Dictionary<string, int>> GetLanguageStatistics(List<string> languages)
         {
-            string token = "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";
             //string[] languages = { "Python", "JavaScript", "Java", "C#", "Go", "Ruby", "PHP", "TypeScript", "C++", "Swift" };
 
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
 
             var languageStats = new Dictionary<string, int>();
 
@@ -58,9 +58,7 @@ namespace FMS.Services
 
         public async Task<int> GetLanguageRepoNumber(string langage)
         {
-            string token = "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";
-
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
 
             var languageStats = new Dictionary<string, int>();
 
@@ -81,6 +79,25 @@ namespace FMS.Services
 
             return totalCount;
         }
+        
+        public async Task<int> GetRepositoriesCountByYear(int year)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
+
+            string apiUrl = $"https://api.github.com/search/repositories?q=created:{year}-01-01..{year}-12-31";
+    
+            var response = await _httpClient.GetAsync(apiUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Erreur API GitHub pour l'année {year}: {response.StatusCode}");
+            }
+
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(jsonResponse);
+    
+            return json["total_count"]?.Value<int>() ?? 0;
+        }
+
 
         /// <summary>
         /// Libère les ressources utilisées par l'instance de HttpClient.
