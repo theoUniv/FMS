@@ -1,6 +1,6 @@
-﻿<div class="container d-flex justify-content-center align-items-center">
-    <div class="row justify-content-center">
-        <div class="col">
+﻿<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row justify-content-center w-100">
+        <div class="col-12 col-md-8 col-lg-6">
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-body p-4">
                     <h2 class="text-center mb-4 text-primary fw-bold">Connexion</h2>
@@ -21,12 +21,41 @@
                     </form>
 
                     <div class="text-center mt-3">
-                        <a href="/Home/RegisterPage" class="btn btn-link">S'inscrire</a>
+                        <a href="/Home/RegisterPage" class="btn btn-link text-decoration-none">S'inscrire</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<!-- Ajouter ce code dans le fichier CSS de la page -->
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        overflow: hidden; /* Empêche le scroll */
+    }
+
+    .container {
+        height: 100%;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .form-control {
+        height: 45px; /* Ajuste la hauteur des champs */
+    }
+
+    button[type="submit"] {
+        height: 45px; /* Ajuste la hauteur du bouton */
+    }
+</style>
 
 <script src="~/js/home/LoginPage.js"></script>

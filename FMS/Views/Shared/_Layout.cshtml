@@ -15,67 +15,128 @@
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FMS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">FMS</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Autre</a>
-                        </li>
-                    </ul>
-                </div>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">FMS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Autre</a>
+                    </li>
+                </ul>
+
+                <!-- Afficher si l'utilisateur est authentifié -->
+                <ul class="navbar-nav ms-auto" id="authLinks">
+                    <!-- Afficher le bouton de déconnexion et le profil si l'utilisateur est authentifié -->
+                    <li class="nav-item d-none" id="logoutItem">
+                        <button class="btn btn-danger" id="logoutButton">Déconnexion</button>
+                    </li>
+                    <li class="nav-item d-none" id="userProfileItem">
+                        <a class="nav-link d-flex align-items-center" href="#">
+                            <img src="" alt="Profile Picture" class="rounded-circle" id="profileImage" width="30" height="30" />
+                            <span id="username_account" class="ms-2"></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - FMS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </nav>
+</header>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
 
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2025 - FMS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>
 
-    <!-- Bootstrap JS -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Configuration de Toastr -->
-    <script>
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": true,
-            "timeOut": "5000"
-        };
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        // Tester un toast de succès
-        // setTimeout(function() {
-        //     toastr.success("Test de Toastr avec les options définies", "Succès");
-        // }, 2000);
-    </script>
+<!-- Bootstrap JS -->
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- RenderSection Scripts -->
-    @await RenderSectionAsync("Scripts", required: false)
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- VueJS -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+<!-- Configuration de Toastr -->
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "timeOut": "5000"
+    };
+
+    // Tester un toast de succès
+    // setTimeout(function() {
+    //     toastr.success("Test de Toastr avec les options définies", "Succès");
+    // }, 2000);
+</script>
+
+<!-- JavaScript pour la gestion de l'authentification -->
+<script>
+    // Fonction qui vérifie si l'utilisateur est authentifié et affiche/masque les éléments correspondants
+    function checkAuthStatus() {
+        const token = localStorage.getItem('token'); // Vérifie si le token existe dans le localStorage
+
+        if (token) {
+            // Utilisateur authentifié
+            const username = localStorage.getItem('username'); // On suppose que le nom d'utilisateur est aussi stocké
+            const profilePic = localStorage.getItem('profilePic'); // On suppose que l'URL de la photo est aussi stockée
+
+            // Affiche les éléments utilisateur
+            document.getElementById('logoutItem').classList.remove('d-none');
+            document.getElementById('userProfileItem').classList.remove('d-none');
+
+            // Met à jour le nom d'utilisateur et la photo de profil
+            document.getElementById('username_account').innerText = username || "Utilisateur";
+            document.getElementById('profileImage').src = profilePic || "https://via.placeholder.com/30"; // Photo de profil par défaut
+        } else {
+            // Utilisateur non authentifié
+            document.getElementById('logoutItem').classList.add('d-none');
+            document.getElementById('userProfileItem').classList.add('d-none');
+        }
+    }
+
+    // Fonction de déconnexion
+    function logout() {
+        // Retirer le token et autres informations d'authentification
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('profilePic');
+
+        // Rediriger vers la page de connexion ou la page d'accueil
+        window.location.href = '/Home/LoginPage';
+    }
+
+    // Lancer la vérification d'authentification au chargement de la page
+    window.onload = checkAuthStatus;
+
+    // Ajouter l'écouteur d'événements pour le bouton de déconnexion
+    document.getElementById('logoutButton')?.addEventListener('click', logout);
+</script>
+
+<!-- RenderSection Scripts -->
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

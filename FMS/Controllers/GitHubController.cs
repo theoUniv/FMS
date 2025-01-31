@@ -55,15 +55,11 @@ namespace FMS.Controllers
         {
             try
             {
-                var GitHublangages = _DBcontext.GitHubLanguagesData;
+                var GitHublangages = _DBcontext.GitHubLanguagesData.ToList();
 
                 foreach (var langage in GitHublangages)
                 {
-                    // Mettre à jour le nombre de dépôts pour chaque langage
                     langage.nombre_repertoire = await _gitHubService.GetLanguageRepoNumber(langage.nom_langage);
-
-                    // Assurez-vous que toutes les autres données sont également mises à jour ici si nécessaire
-
                     _DBcontext.GitHubLanguagesData.Update(langage);
                 }
 

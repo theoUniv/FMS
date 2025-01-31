@@ -1,8 +1,18 @@
 ﻿document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    var usernameInput = document.getElementById("username");
+    var passwordInput = document.getElementById("password");
+
+    //console.log("Champ username trouvé ?", usernameInput);
+    //console.log("Champ password trouvé ?", passwordInput);
+
+    var username = usernameInput ? usernameInput.value : null;
+    var password = passwordInput ? passwordInput.value : null;
+
+    //console.log("Valeurs récupérées :", username, password);
+    
+    //console.log(username, password);
 
     const loginData = { username, password };
 

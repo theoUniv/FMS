@@ -3,34 +3,63 @@
 }
 
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>Langages les plus populaires</h2>
-        <button id="logoutButton" class="btn btn-danger">Déconnexion</button>
+    <!-- Titre et bouton Déconnexion -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">📊 Statistiques GitHub</h2>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <button id="updateLangagesButton" class="btn btn-primary">Mettre à jour les données des langages</button>
-        <button id="updateYearlyStatsButton" class="btn btn-secondary">Mettre à jour les statistiques annuelles</button>
+    <!-- Boutons d'actions -->
+    <div class="d-flex justify-content-center mb-4">
+        <div class="btn-group">
+            <button id="updateLangagesButton" class="btn btn-primary">🔄 Mettre à jour les langages</button>
+            <button id="updateYearlyStatsButton" class="btn btn-secondary">📅 Mettre à jour les stats annuelles</button>
+        </div>
     </div>
 
-    <div id="loadingSpinner" class="text-center mt-3">
+    <!-- Spinner de chargement -->
+    <div id="loadingSpinner" class="text-center mt-3 d-none">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Chargement...</span>
         </div>
-        <p>Chargement des données, veuillez patienter...</p>
+        <p class="mt-2 text-muted">Chargement des données, veuillez patienter...</p>
     </div>
 
-    <div class="mt-4">
-        <h3>Nombre de dépôts par langage</h3>
-        <canvas id="languageChart" width="400" height="200" style="display: none;"></canvas>
-    </div>
+    <!-- Contenu principal -->
+    <div class="row">
+        <!-- Langages les plus populaires -->
+        <div class="col-md-6 mb-4 fade-in hidden">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center">📌 Nombre de dépôts par langage</h5>
+                    <canvas id="languageChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
 
-    <div class="mt-4">
-        <h3>Nombre de dépôts par année</h3>
-        <canvas id="yearChart" width="400" height="200" style="display: none;"></canvas>
+        <!-- Statistiques annuelles -->
+        <div class="col-md-6 mb-4 fade-in hidden">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center">📆 Nombre de dépôts par année</h5>
+                    <canvas id="yearChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Import des scripts nécessaires -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/home/Index.js"></script>
+
+<!-- CSS pour l'effet d'apparition -->
+<style>
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
