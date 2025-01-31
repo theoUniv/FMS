@@ -3,7 +3,6 @@ using System.ComponentModel;
 
 namespace FMS.Services
 {
-
     /// <summary>
     /// Service pour interagir avec l'API GitHub et récupérer des statistiques sur les langages de programmation.
     /// </summary>
@@ -31,7 +30,8 @@ namespace FMS.Services
         {
             //string[] languages = { "Python", "JavaScript", "Java", "C#", "Go", "Ruby", "PHP", "TypeScript", "C++", "Swift" };
 
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
 
             var languageStats = new Dictionary<string, int>();
 
@@ -42,7 +42,8 @@ namespace FMS.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Erreur lors de l'appel à l'API GitHub pour {language}: {response.StatusCode}");
+                    throw new Exception(
+                        $"Erreur lors de l'appel à l'API GitHub pour {language}: {response.StatusCode}");
                 }
 
                 string jsonResponse = await response.Content.ReadAsStringAsync();
@@ -58,7 +59,8 @@ namespace FMS.Services
 
         public async Task<int> GetLanguageRepoNumber(string langage)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
 
             var languageStats = new Dictionary<string, int>();
 
@@ -79,23 +81,31 @@ namespace FMS.Services
 
             return totalCount;
         }
-        
+
         public async Task<int> GetRepositoriesCountByYear(int year)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
-
-            string apiUrl = $"https://api.github.com/search/repositories?q=created:{year}-01-01..{year}-12-31";
-    
-            var response = await _httpClient.GetAsync(apiUrl);
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                throw new Exception($"Erreur API GitHub pour l'année {year}: {response.StatusCode}");
-            }
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("token", _accessToken);
 
-            string jsonResponse = await response.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(jsonResponse);
-    
-            return json["total_count"]?.Value<int>() ?? 0;
+                string apiUrl = $"https://api.github.com/search/repositories?q=created:{year}-01-01..{year}-12-31";
+
+                var response = await _httpClient.GetAsync(apiUrl);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Erreur API GitHub pour l'année {year}: {response.StatusCode}");
+                }
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(jsonResponse);
+
+                return json["total_count"]?.Value<int>() ?? 0;
+            }
+            catch (Exception ex)
+            {
+                return 1;
+            }
         }
 
 

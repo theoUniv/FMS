@@ -71,6 +71,8 @@ namespace FMS.Controllers
             {
                 return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
             }
+            
+            Console.WriteLine("MDP CRYPTE: " + storedUser.password + "MDP plaintext password" + user.password);
 
             var isPasswordValid = _aesCipherService.VerifyPassword(storedUser.password, user.password);
             if (!isPasswordValid)
