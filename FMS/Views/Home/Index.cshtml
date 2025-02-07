@@ -3,7 +3,7 @@
 }
 
 <div class="container mt-5">
-    <!-- Titre et bouton Déconnexion -->
+    <!-- Titre et actions -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-primary fw-bold">📊 Statistiques GitHub</h2>
     </div>
@@ -26,17 +26,28 @@
 
     <!-- Contenu principal -->
     <div class="row">
-        <!-- Langages les plus populaires -->
+        <!-- Graphique des langages -->
         <div class="col-md-6 mb-4 fade-in hidden">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title text-center">📌 Nombre de dépôts par langage</h5>
+
+                    <!-- Sélecteur de langage bien positionné -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="col-md-8">
+                            <label for="languageSelect" class="form-label fw-bold text-center d-block">🌍 Filtrer :</label>
+                            <select id="languageSelect" class="form-select">
+                                <option value="all">Tous les langages</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <canvas id="languageChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Statistiques annuelles -->
+        <!-- Graphique des stats annuelles -->
         <div class="col-md-6 mb-4 fade-in hidden">
             <div class="card shadow-sm">
                 <div class="card-body">
@@ -48,7 +59,7 @@
     </div>
 </div>
 
-<!-- Import des scripts nécessaires -->
+<!-- Import des scripts -->
 <script src="~/js/home/Index.js"></script>
 
 <!-- CSS pour l'effet d'apparition -->

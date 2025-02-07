@@ -26,24 +26,22 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">FMS</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">🏠 Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Autre</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Langages">📜 Langages GitHub</a>
                     </li>
                 </ul>
 
                 <!-- Afficher si l'utilisateur est authentifié -->
-                <ul class="navbar-nav ms-auto" id="authLinks">
-                    <!-- Afficher le bouton de déconnexion et le profil si l'utilisateur est authentifié -->
+                <ul class="navbar-nav ms-auto d-flex align-items-center" id="authLinks">
+                    <!-- Afficher le nom de l'utilisateur à gauche du bouton de déconnexion -->
+                    <li class="nav-item d-none" id="userProfileItem">
+                        <span id="username_account" class="nav-link text-dark me-3">Utilisateur</span>
+                    </li>
+                    <!-- Afficher le bouton de déconnexion -->
                     <li class="nav-item d-none" id="logoutItem">
                         <button class="btn btn-danger" id="logoutButton">Déconnexion</button>
-                    </li>
-                    <li class="nav-item d-none" id="userProfileItem">
-                        <a class="nav-link d-flex align-items-center" href="#">
-                            <img src="" alt="Profile Picture" class="rounded-circle" id="profileImage" width="30" height="30" />
-                            <span id="username_account" class="ms-2"></span>
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -102,15 +100,13 @@
         if (token) {
             // Utilisateur authentifié
             const username = localStorage.getItem('username'); // On suppose que le nom d'utilisateur est aussi stocké
-            const profilePic = localStorage.getItem('profilePic'); // On suppose que l'URL de la photo est aussi stockée
 
             // Affiche les éléments utilisateur
             document.getElementById('logoutItem').classList.remove('d-none');
             document.getElementById('userProfileItem').classList.remove('d-none');
 
-            // Met à jour le nom d'utilisateur et la photo de profil
+            // Met à jour le nom d'utilisateur
             document.getElementById('username_account').innerText = username || "Utilisateur";
-            document.getElementById('profileImage').src = profilePic || "https://via.placeholder.com/30"; // Photo de profil par défaut
         } else {
             // Utilisateur non authentifié
             document.getElementById('logoutItem').classList.add('d-none');
@@ -123,14 +119,40 @@
         // Retirer le token et autres informations d'authentification
         localStorage.removeItem('token');
         localStorage.removeItem('username');
-        localStorage.removeItem('profilePic');
 
         // Rediriger vers la page de connexion ou la page d'accueil
         window.location.href = '/Home/LoginPage';
     }
 
+    // Fonction pour récupérer le username via un token JWT
+    function getUsername() {
+        const token = localStorage.getItem('token'); // Récupérer le token stocké dans le localStorage
+
+        if (token) {
+            fetch('/GitHub/GetUserName', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token, // Ajouter le token d'authentification
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const username = data; // Récupérer le nom d'utilisateur
+                    document.getElementById('username_account').innerText = username;
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    // Gérer les erreurs, peut-être afficher un message
+                });
+        }
+    }
+
     // Lancer la vérification d'authentification au chargement de la page
-    window.onload = checkAuthStatus;
+    window.onload = function() {
+        checkAuthStatus();
+        getUsername();
+    };
 
     // Ajouter l'écouteur d'événements pour le bouton de déconnexion
     document.getElementById('logoutButton')?.addEventListener('click', logout);

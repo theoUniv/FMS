@@ -20,6 +20,25 @@ namespace FMS.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FMS.Models.AssoUserLangageModel", b =>
+                {
+                    b.Property<int>("id_asso")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_asso"));
+
+                    b.Property<int>("id_langage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_user")
+                        .HasColumnType("int");
+
+                    b.HasKey("id_asso");
+
+                    b.ToTable("AssoUserLangage", (string)null);
+                });
+
             modelBuilder.Entity("FMS.Models.GitHubLangageDataModel", b =>
                 {
                     b.Property<int>("id_github_langage_data")
