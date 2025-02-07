@@ -1,5 +1,70 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
     const token = localStorage.getItem("token");
+    const languageSelect = document.getElementById('languageSelect');
+    const languageChartCanvas = document.getElementById('languageChart');
+
+    let languageChart;
+    let allLanguagesData = [];
+
+    if (!token) return;
+
+    fetch('/GitHub/GetLanguageStats', {
+        method: 'GET',
+        headers: {'Authorization': `Bearer ${token}`}
+    })
+        .then(response => response.json())
+        .then(data => {
+            allLanguagesData = data;
+            updateLanguageOptions(data);
+            drawChart(data);
+        })
+        .catch(error => console.error("Erreur lors de la récupération des données :", error));
+
+    function updateLanguageOptions(data) {
+        languageSelect.innerHTML = '<option value="all">Tous les langages</option>';
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.nom_langage;
+            option.textContent = item.nom_langage;
+            languageSelect.appendChild(option);
+        });
+    }
+
+    function drawChart(data) {
+        const labels = data.map(item => item.nom_langage);
+        const values = data.map(item => item.nombre_repertoire);
+
+        if (languageChart) languageChart.destroy();
+
+        const ctx = languageChartCanvas.getContext('2d');
+        languageChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre de dépôts GitHub par langage',
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {y: {beginAtZero: true}}
+            }
+        });
+    }
+
+    languageSelect.addEventListener('change', function () {
+        const selectedLanguage = languageSelect.value;
+        const filteredData = selectedLanguage === "all"
+            ? allLanguagesData
+            : allLanguagesData.filter(item => item.nom_langage === selectedLanguage);
+
+        drawChart(filteredData);
+    });
+
     const currentPath = window.location.pathname;
 
 
@@ -12,7 +77,7 @@
         });
     });
     document.querySelectorAll(".fade-in").forEach(el => observer.observe(el));
-    
+
     function redirectTo(path) {
         if (window.location.pathname !== path) {
             window.location.href = path;

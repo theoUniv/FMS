@@ -11,6 +11,8 @@ public class AppDbContext : DbContext
     public DbSet<GitHubLangageDataModel> GitHubLanguagesData { get; set; }
     
     public DbSet<GitHubYearlyStatsModel> GitHubYearlyStatsModel { get; set; }
+    
+    public DbSet<AssoUserLangageModel> AssoUserLangage { get; set; }
 
     /// <summary>
     /// Initialise une nouvelle instance de la classe <see cref="AppDbContext"/> avec les options spécifiées.
@@ -48,5 +50,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<GitHubYearlyStatsModel>()
             .ToTable("GitHubYearlyStats")
             .HasKey(g => g.id_github_yearly_stats);
+        
+        
+        modelBuilder.Entity<AssoUserLangageModel>()
+            .ToTable("AssoUserLangage")
+            .HasKey(g => g.id_asso);
     }
 }

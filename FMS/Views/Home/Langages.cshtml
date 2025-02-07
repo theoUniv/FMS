@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Langages GitHub";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary fw-bold text-center">📜 Langages Disponibles sur GitHub</h2>
+
+    <!-- Spinner de chargement -->
+    <div id="loadingSpinner" class="text-center mt-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2 text-muted">Chargement des langages, veuillez patienter...</p>
+    </div>
+
+    <!-- Message en cas d'erreur -->
+    <div id="errorMessage" class="alert alert-danger d-none text-center mt-3">
+        ❌ Une erreur est survenue lors du chargement des langages.
+    </div>
+
+    <!-- Liste des langages -->
+    <div id="languagesList" class="mt-4 d-none">
+        <ul class="list-group">
+            <!-- Les langages et boutons seront ajoutés dynamiquement -->
+        </ul>
+    </div>
+</div>
+
+<!-- Import du fichier JavaScript -->
+<script src="~/js/home/languages.js"></script>

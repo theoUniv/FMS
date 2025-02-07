@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FMS.Controllers
@@ -7,7 +9,7 @@ namespace FMS.Controllers
         /// <summary>
         /// Action qui retourne la vue de la page d'accueil.
         /// </summary>
-        /// <returns>Retourne la vue par défaut de l'index.</returns>
+        /// <returns>Retourne la vue par d?faut de l'index.</returns>
         public IActionResult Index()
         {
             return View();
@@ -29,6 +31,12 @@ namespace FMS.Controllers
         /// <returns>Retourne la vue pour la page d'inscription.</returns>
         [HttpGet]
         public IActionResult RegisterPage()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Langages()
         {
             return View();
         }

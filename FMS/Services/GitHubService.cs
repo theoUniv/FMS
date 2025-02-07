@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Text;
+using YamlDotNet.Serialization;
 
 namespace FMS.Services
 {
@@ -106,6 +109,75 @@ namespace FMS.Services
             {
                 return 1;
             }
+        }
+
+
+        public async Task<List<string>> GetAllGitHubLanguages()
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("token", _accessToken);
+                _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+
+                // URL de l'API pour récupérer le fichier YAML des langages
+                string url = "https://api.github.com/repos/github/linguist/contents/lib/linguist/languages.yml";
+
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Erreur API GitHub: {response.StatusCode}");
+                }
+
+                // Lire la réponse en string
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(jsonResponse))
+                {
+                    throw new Exception("La réponse de l'API GitHub est vide.");
+                }
+
+                // Extraire le contenu Base64 du fichier YAML
+                JObject json = JObject.Parse(jsonResponse);
+                string base64Content = json["content"]?.ToString();
+                if (string.IsNullOrEmpty(base64Content))
+                {
+                    throw new Exception("Le fichier YAML est vide ou introuvable.");
+                }
+
+                // Décoder le contenu Base64
+                byte[] data = Convert.FromBase64String(base64Content);
+                string yamlContent = Encoding.UTF8.GetString(data);
+
+                // Désérialiser le contenu YAML pour en extraire les langages
+                var deserializer = new Deserializer();
+                var yamlDict = deserializer.Deserialize<Dictionary<string, object>>(yamlContent);
+
+                // Retourner les noms des langages sous forme de liste
+                return new List<string>(yamlDict.Keys);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération des langages : {ex.Message}");
+                return new List<string>(); // Retourne une liste vide en cas d'erreur
+            }
+        }
+
+    // Fonction pour extraire l'URL de la page suivante depuis l'en-tête Link
+        private string GetNextPageUrl(string linkHeader)
+        {
+            const string nextLinkPrefix = "<";
+            const string nextLinkSuffix = ">; rel=\"next\"";
+
+            var nextLinkStart = linkHeader.IndexOf(nextLinkPrefix);
+            var nextLinkEnd = linkHeader.IndexOf(nextLinkSuffix);
+
+            if (nextLinkStart == -1 || nextLinkEnd == -1)
+            {
+                return null;
+            }
+
+            return linkHeader.Substring(nextLinkStart + nextLinkPrefix.Length,
+                nextLinkEnd - (nextLinkStart + nextLinkPrefix.Length));
         }
 
 

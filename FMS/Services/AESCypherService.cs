@@ -95,9 +95,9 @@ public class AesCipherService
             using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
             using (StreamReader srDecrypt = new StreamReader(csDecrypt))
             {
-                string decryptedPassword = srDecrypt.ReadToEnd(); // Déchiffrer le mot de passe
+                string decryptedPassword = srDecrypt.ReadToEnd();
                 Console.WriteLine("MDP DECRYPTE: " + decryptedPassword + "MDP plaintext password" + plainTextPassword);
-                return decryptedPassword == plainTextPassword; // Comparer le mot de passe déchiffré avec celui fourni
+                return decryptedPassword == plainTextPassword; 
             }
         }
     }
